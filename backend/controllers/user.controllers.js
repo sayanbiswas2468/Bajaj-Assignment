@@ -1,9 +1,12 @@
 const parseInputArray = (inputArray) => {
     const numbers = inputArray.filter((item) => !isNaN(item)); // Numeric values
     const alphabets = inputArray.filter((item) => isNaN(item)); // Non-numeric values
+    const lowercaseAlphabets = alphabets.filter((item) => /^[a-z]$/.test(item));
+    const highestLowercase = lowercaseAlphabets.length ? lowercaseAlphabets.sort()[lowercaseAlphabets.length - 1] : null;
 
-    return { numbers, alphabets };
+    return { numbers, alphabets, highestLowercase };
 };
+
 const getFileProperties = (base64String) => {
     try {
         const matches = base64String.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
@@ -20,6 +23,7 @@ const getFileProperties = (base64String) => {
         return { valid: false };
     }
 };
+
 export const postRequest = async (req, res) => {
     try {
         const { name, dob, roll_number, email, data_array, file_base64 } = req.body;
@@ -46,7 +50,6 @@ export const postRequest = async (req, res) => {
         }
 
         const formattedDob = dob.split('-').reverse().join('');
-
         const userId = `${name.trim().replace(/\s+/g, '_').toLowerCase()}_${formattedDob}`;
 
         const response = {
@@ -71,7 +74,6 @@ export const postRequest = async (req, res) => {
         });
     }
 };
-
 
 export const getRequest = async (req, res) => {
     const response = {

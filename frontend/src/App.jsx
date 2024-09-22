@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
-import cors from "cors"
+
 function App() {
-  const [jsonInput, setJsonInput] = useState('');
-  const [response, setResponse] = useState(null);
-  const [error, setError] = useState('');
-  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [jsonInput, setJsonInput] = useState(''); 
+  const [response, setResponse] = useState(null); 
+  const [error, setError] = useState(''); 
+  const [selectedOptions, setSelectedOptions] = useState([]); 
 
   const handleInputChange = (event) => {
     setJsonInput(event.target.value);
@@ -21,23 +21,23 @@ function App() {
 
     try {
       const parsedJson = JSON.parse(jsonInput);
-      if (!parsedJson || !Array.isArray(parsedJson.data)) {
-        setError('Invalid JSON format');
+      if (!parsedJson.name || !parsedJson.dob || !parsedJson.roll_number || !parsedJson.email || !Array.isArray(parsedJson.data_array)) {
+        setError('Missing or invalid input fields');
         return;
       }
-      setError('');
+      setError(''); 
     } catch (err) {
       setError('Invalid JSON');
       return;
     }
 
     try {
-      const res = await fetch('http://localhost:5000/bfhl', { // This points to the backend API
+      const res = await fetch('http://localhost:5000/bfhl', { // Make sure this matches your backend port
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data: JSON.parse(jsonInput).data }),
+        body: JSON.stringify(JSON.parse(jsonInput)),
       });
 
       const result = await res.json();
@@ -84,7 +84,13 @@ function App() {
             rows="5"
             value={jsonInput}
             onChange={handleInputChange}
-            placeholder='{"data": ["A", "B", "1"]}'
+            placeholder='{
+              "name": "John Doe",
+              "dob": "1999-09-17",
+              "roll_number": "123",
+              "email": "john@example.com",
+              "data_array": ["A", "B", "1", "a", "4"]
+            }'
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
