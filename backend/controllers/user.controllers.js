@@ -1,81 +1,30 @@
-const parseInputArray = (inputArray) => {
-    const numbers = inputArray.filter((item) => !isNaN(item)); 
-    const alphabets = inputArray.filter((item) => isNaN(item)); 
-    const lowercaseAlphabets = alphabets.filter((item) => /^[a-z]$/.test(item));
-    const highestLowercase = lowercaseAlphabets.length ? lowercaseAlphabets.sort()[lowercaseAlphabets.length - 1] : null;
-
-    return { numbers, alphabets, highestLowercase };
-};
-
-const getFileProperties = (base64String) => {
-    try {
-        const matches = base64String.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-        if (!matches || matches.length !== 3) {
-            return { valid: false };
-        }
-
-        const mimeType = matches[1];
-        const buffer = Buffer.from(matches[2], 'base64');
-        const sizeKb = buffer.length / 1024;
-
-        return { valid: true, mimeType, sizeKb };
-    } catch (error) {
-        return { valid: false };
-    }
-};
-
 export const postRequest = async (req, res) => {
-    try {
-        const { name, dob, roll_number, email, data_array, file_base64 } = req.body;
+    const { data, file_b64 } = req.body;
 
-        if (!name || !dob || !roll_number || !email || !Array.isArray(data_array)) {
-            return res.status(400).json({
-                is_success: false,
-                message: "Missing or invalid input fields"
-            });
-        }
+    const numbers = data.filter(item => !isNaN(item));
+    const alphabets = data.filter(item => isNaN(item));
+    const lowercaseAlphabets = alphabets.filter(char => char === char.toLowerCase());
 
-        const { numbers, alphabets, highestLowercase } = parseInputArray(data_array);
+    const highestLowercase = lowercaseAlphabets.length > 0 ? [lowercaseAlphabets.sort().pop()] : [];
 
-        let fileValid = false;
-        let fileMimeType = null;
-        let fileSizeKb = null;
+    const fileValid = file_b64 ? true : false; 
+    const fileMimeType = fileValid ? "image/png" : null; 
+    const fileSizeKb = file_b64 ? Buffer.from(file_b64, 'base64').length / 1024 : 0;
 
-        if (file_base64) {
-            const fileProps = getFileProperties(file_base64);
-            fileValid = fileProps?.valid || false;
-            fileMimeType = fileProps?.mimeType || null;
-            fileSizeKb = fileProps?.sizeKb || null;
-        }
-
-        const formattedDob = dob.split('-').reverse().join('');
-        const userId = `${name.trim().replace(/\s+/g, '_').toLowerCase()}_${formattedDob}`;
-        const response = {
-            is_success: true,
-            user_id: userId,
-            email: email,
-            roll_number: roll_number,
-            numbers: numbers || [],
-            alphabets: alphabets || [],
-            highest_lowercase_alphabet: highestLowercase ? [highestLowercase] : [],
-            file_valid: fileValid,
-            file_mime_type: fileMimeType,
-            file_size_kb: fileSizeKb ? fileSizeKb.toFixed(2) : null, 
-        };
-
-        res.status(200).json(response);
-    } catch (error) {
-        res.status(500).json({
-            is_success: false,
-            message: "Internal server error",
-            error: error.message
-        });
-    }
+    res.json({
+        is_success: true,
+        user_id: "sayan_biswas_02122003",
+        email: "sayanbiswas2468@gmail.com",
+        roll_number: "AP21110011129",
+        numbers,
+        alphabets,
+        highest_lowercase_alphabet: highestLowercase,
+        file_valid: fileValid,
+        file_mime_type: fileMimeType,
+        file_size_kb: fileSizeKb
+    });
 };
 
 export const getRequest = async (req, res) => {
-    const response = {
-        operation_code: 1,
-    };
-    res.status(200).json(response);
+    res.json({ operation_code: 1 });
 }
