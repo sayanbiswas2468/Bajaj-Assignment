@@ -26,14 +26,18 @@ function App() {
   };
 
   return (
-    <div>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }} >
       <h1>AP21110011129</h1>
       <textarea onChange={handleInputChange} rows="10" cols="50" placeholder="Enter JSON here" />
       <br />
       <button onClick={handleSubmit}>Submit</button>
 
+      <label>Filter Response: </label>
       <div>
-        <label>Filter Response: </label>
         <select multiple={true} onChange={handleOptionChange}>
           <option value="numbers">Numbers</option>
           <option value="alphabets">Alphabets</option>
@@ -44,7 +48,7 @@ function App() {
       {error && <p>{error}</p>}
       {responseData && (
         <div>
-          <h2>Response:</h2>
+          <h2>Response</h2>
           <pre>{JSON.stringify(responseData, null, 2)}</pre>
           <div>
             {selectedOptions.includes('numbers') && <p>Numbers: {responseData.numbers}</p>}

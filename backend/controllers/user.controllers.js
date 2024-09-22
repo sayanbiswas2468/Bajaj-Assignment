@@ -14,7 +14,7 @@ export const postRequest = async (req, res) => {
     res.json({
         is_success: true,
         user_id: "sayan_biswas_02122003",
-        email: "sayanbiswas2468@gmail.com",
+        email: "sayan_biman@srmap.edu.in",
         roll_number: "AP21110011129",
         numbers,
         alphabets,
