@@ -1,6 +1,6 @@
 const parseInputArray = (inputArray) => {
-    const numbers = inputArray.filter((item) => !isNaN(item)); // Numeric values
-    const alphabets = inputArray.filter((item) => isNaN(item)); // Non-numeric values
+    const numbers = inputArray.filter((item) => !isNaN(item)); 
+    const alphabets = inputArray.filter((item) => isNaN(item)); 
     const lowercaseAlphabets = alphabets.filter((item) => /^[a-z]$/.test(item));
     const highestLowercase = lowercaseAlphabets.length ? lowercaseAlphabets.sort()[lowercaseAlphabets.length - 1] : null;
 
@@ -37,7 +37,6 @@ export const postRequest = async (req, res) => {
 
         const { numbers, alphabets, highestLowercase } = parseInputArray(data_array);
 
-        // Initialize file properties
         let fileValid = false;
         let fileMimeType = null;
         let fileSizeKb = null;
@@ -51,7 +50,6 @@ export const postRequest = async (req, res) => {
 
         const formattedDob = dob.split('-').reverse().join('');
         const userId = `${name.trim().replace(/\s+/g, '_').toLowerCase()}_${formattedDob}`;
-
         const response = {
             is_success: true,
             user_id: userId,
@@ -62,7 +60,7 @@ export const postRequest = async (req, res) => {
             highest_lowercase_alphabet: highestLowercase ? [highestLowercase] : [],
             file_valid: fileValid,
             file_mime_type: fileMimeType,
-            file_size_kb: fileSizeKb ? fileSizeKb.toFixed(2) : null, // Two decimal places for file size
+            file_size_kb: fileSizeKb ? fileSizeKb.toFixed(2) : null, 
         };
 
         res.status(200).json(response);

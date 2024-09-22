@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import './App.css';
 
 function App() {
-  const [jsonInput, setJsonInput] = useState(''); 
-  const [response, setResponse] = useState(null); 
-  const [error, setError] = useState(''); 
-  const [selectedOptions, setSelectedOptions] = useState([]); 
+  const [jsonInput, setJsonInput] = useState('');
+  const [response, setResponse] = useState(null);
+  const [error, setError] = useState('');
+  const [selectedOptions, setSelectedOptions] = useState([]);
 
   const handleInputChange = (event) => {
     setJsonInput(event.target.value);
@@ -21,23 +21,23 @@ function App() {
 
     try {
       const parsedJson = JSON.parse(jsonInput);
-      if (!parsedJson.name || !parsedJson.dob || !parsedJson.roll_number || !parsedJson.email || !Array.isArray(parsedJson.data_array)) {
-        setError('Missing or invalid input fields');
+      if (!parsedJson.data) {
+        setError('Invalid input fields. Make sure to use the correct format.');
         return;
       }
-      setError(''); 
+      setError('');
     } catch (err) {
-      setError('Invalid JSON');
+      setError('Invalid JSON format.');
       return;
     }
 
     try {
-      const res = await fetch('http://localhost:5000/bfhl', { // Make sure this matches your backend port
+      const res = await fetch('http://localhost:5000/bfhl', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(JSON.parse(jsonInput)),
+        body: JSON.stringify({ data: JSON.parse(jsonInput).data }),
       });
 
       const result = await res.json();
@@ -67,7 +67,7 @@ function App() {
 
     return (
       <div>
-        <h3>Response</h3>
+        <h3>Filtered Response</h3>
         <pre>{JSON.stringify(filteredData, null, 2)}</pre>
       </div>
     );
@@ -79,18 +79,12 @@ function App() {
 
       <form onSubmit={handleSubmit}>
         <div>
-          <label>Enter JSON input:</label>
+          <label>API Input:</label>
           <textarea
             rows="5"
             value={jsonInput}
             onChange={handleInputChange}
-            placeholder='{
-              "name": "John Doe",
-              "dob": "1999-09-17",
-              "roll_number": "123",
-              "email": "john@example.com",
-              "data_array": ["A", "B", "1", "a", "4"]
-            }'
+            placeholder='{"data":["M", "1", "334", "4", "B"]}'
           />
         </div>
         {error && <p style={{ color: 'red' }}>{error}</p>}
@@ -99,7 +93,7 @@ function App() {
 
       {response && (
         <div>
-          <label>Filter Response:</label>
+          <label>Multi Filter</label>
           <select multiple onChange={handleDropdownChange}>
             <option value="Alphabets">Alphabets</option>
             <option value="Numbers">Numbers</option>
