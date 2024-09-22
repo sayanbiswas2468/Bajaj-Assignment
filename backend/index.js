@@ -8,7 +8,7 @@ app.use(bodyParser.json({ limit: '50mb' }))
 
 const PORT = 5000||"https://splendorous-khapse-ef9b71.netlify.app/"
 app.use(cors());
-app.use(routes)
+app.use("/bfhl",routes)
 app.listen(PORT, () => {
     console.log(`Server is listening on ${PORT}`)
 })
