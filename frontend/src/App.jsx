@@ -12,7 +12,7 @@ function App() {
   const handleSubmit = async () => {
     try {
       const payload = JSON.parse(jsonInput);
-      const response = import.meta.env.MODE === "development" ? await axios.post('http://localhost:5000/bfhl', payload) : await axios.post('https://bajaj-assignment-lnivsp2dy-sayanbiswas0408s-projects.vercel.app/bfhl', payload);
+      const response = import.meta.env.MODE === "development" ? await axios.post('http://localhost:5000/bfhl', payload) : await axios.post('', payload);
       setResponseData(response.data);
       setError('');
     } catch (err) {
